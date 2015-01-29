@@ -1,0 +1,51 @@
+<html><head>
+<title>OtpManager Demo</title>
+<style>
+    body {
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+
+<body style="width: 45em;">
+<h1 id="otpmanager-demo">OtpManager Demo</h1>
+<p>Javascript Implementation of 2 Factor Auth</p>
+<hr>
+<p>Secret: "super secret secret awh yeah"</p>
+<h2 id="code-1">Code 1</h2>
+<p id="ticker-1">ticker 1</p>
+<hr>
+<p>Secret: "23TplPdS46Juzcyx"</p>
+<h2 id="code-2">Code 2</h2>
+<p id="ticker-2">ticker 2</p>
+
+<script src="dist/TotpManager.js"></script>
+<script>
+$ = function(sel) {
+  return document.querySelector(sel);
+}
+var totpManager = new TotpManager("super secret secret awh yeah", $('#code-1'), $('#ticker-1'));
+totpManager.add("23TplPdS46Juzcyx", $('#code-2'), $('#ticker-2'));
+
+//TODO implement this. The problem is that not all secrets are valid...
+//getSecret = function() {
+//  var secret = prompt("Enter secret");
+//  $('#secret-3').innerHTML = secret;
+//  if(totpManager.accounts.length === 3)
+//    totpManager.accounts.pop();
+//  totpManager.add(secret, $('#code-3'), $('#ticker-3'));
+//  $('#qr-3').src = 'https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/user@host.com%3Fsecret%3D' + secret;
+//}
+</script>
+
+<!-- <hr>
+<button type="button" onclick="getSecret()">Try your own secret</button>
+<p id="secret-3"></p>
+<h2 id="code-3"></h2>
+<p id="ticker-3"></p>
+<br>
+<p>To verify it, you can scan the following QR code with your Google Authenticator app. The codes on this page and your app should match.</p>
+<img id="qr-3"></img> -->
+
+</body></html>

@@ -1,0 +1,16 @@
+{
+  "name": "OtpManager",
+  "version": "0.0.1",
+  "repository": "http://github.com/jiangts/OtpManager",
+  "author": "Allan Jiang",
+  "dependencies": {
+    "grunt": "~0.4.0",
+    "grunt-contrib-coffee": "*",
+    "grunt-contrib-watch": "*"
+  },
+  "devDependencies": {
+    "grunt-contrib-concat": "^0.5.0",
+    "grunt-contrib-cssmin": "^0.10.0",
+    "grunt-contrib-uglify": "^0.5.0"
+  }
+}
