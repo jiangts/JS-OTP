@@ -8,7 +8,7 @@ A small javascript library (13k minified, 5k minified and gzipped) that handles 
 This package only exposes `TotpManager` and `jsSHA` to global scope and does not depend on jQuery.
 
 ## Usage:
-Usage is simple. Just link `dist/TotpManager.js` to your `.html` file and pass it a config.
+Usage is simple. Just include `dist/TotpManager.js` to your page and pass it a config.
 ```
 <script src='dist/TotpManager.min.js'></script>
 <script>
@@ -23,15 +23,16 @@ var totpManager = new TotpManager("super secret secret", codeEl, tickEl);
 Make sure the elements you pass in are already initialized.
 
 
-It is simple to manage multiple codes. Just add them to the current manager!
+It is simple to manage multiple codes. Just add them to the manager!
 ```
-var totpManager.add("super secret secret", codeEl, tickEl);
+var totpManager.add("23TplPdS46Juzcyx", codeEl2, tickEl2);
 ```
 
 Finally, you can also configure the expiry time for each code (defaults to 30 seconds) and the length of the code (between 6 and 8, defaults to 6) by passing two additional arguments to the constructor:
 ```
-var totpManager = new TotpManager(<secret>, <code elem>, <tick elem>, <expiry seconds>, <code length>);
+var totpManager = new TotpManager(<secret>, <code elem>, <tick elem>, 
+                                  <expiry seconds>, <code length>);
 ```
 
 ## Acknowledgements
-This package is adapted from the following [fiddle](http://jsfiddle.net/nt18yhmL/) and uses [jsSHA](https://github.com/caligatio/jsSHA/).
+This package is adapted from the following [fiddle](http://jsfiddle.net/nt18yhmL/) and uses Brian Turek's [jsSHA](https://github.com/caligatio/jsSHA/).

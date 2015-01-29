@@ -8,7 +8,7 @@
       this.length = length != null ? length : 6;
       this.timer = __bind(this.timer, this);
       if (this.length > 8 || this.length < 6) {
-        throw "invalid code length";
+        throw "Error: invalid code length";
       }
       this.accounts = [];
       this.add(secret, codeEl, tickEl);
@@ -56,12 +56,10 @@
       key = this.base32tohex(secret);
       epoch = Math.round(new Date().getTime() / 1000.0);
       time = this.leftpad(this.dec2hex(Math.floor(epoch / this.expiry)), 16, "0");
-      console.log("time var is " + time);
       hmacObj = new jsSHA(time, "HEX");
-      console.log("key var is " + key);
       hmac = hmacObj.getHMAC(key, "HEX", "SHA-1", "HEX");
       if (hmac === "KEY MUST BE IN BYTE INCREMENTS") {
-        throw "Error creating code";
+        throw "Error: hex key must be in byte increments";
       } else {
         offset = this.hex2dec(hmac.substring(hmac.length - 1));
       }

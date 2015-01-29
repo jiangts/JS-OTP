@@ -3,7 +3,7 @@ class TotpManager
   constructor: (secret, codeEl, tickEl, @expiry = 30, @length = 6) ->
     # validate input
     if @length > 8 or @length < 6
-      throw "invalid code length"
+      throw "Error: invalid code length"
 
     # create array to hold all accounts to manage
     @accounts = []
@@ -49,7 +49,7 @@ class TotpManager
     hmac = hmacObj.getHMAC(key, "HEX", "SHA-1", "HEX")
   
     if hmac is "KEY MUST BE IN BYTE INCREMENTS"
-      throw "Error creating code"
+      throw "Error: hex key must be in byte increments"
       # return null
     else
       offset = @hex2dec(hmac.substring(hmac.length - 1))
