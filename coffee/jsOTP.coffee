@@ -56,9 +56,11 @@ class Totp
 
 class Hotp
   constructor: (@length = 6) ->
+    # validate input
+    if @length > 8 or @length < 6
+      throw "Error: invalid code length"
 
-  # stuck on this for a long time. Use JSON.stringify to inspect uintToString
-  # output!!
+  # stuck on this for a long time. Use JSON.stringify to inspect uintToString output!!
   uintToString: (uintArray) ->
     encodedString = String.fromCharCode.apply(null, uintArray)
     decodedString = decodeURIComponent(escape(encodedString))
@@ -69,7 +71,6 @@ class Hotp
     shaObj.setHMACKey(key, "TEXT")
     shaObj.update(@uintToString(new Uint8Array(@intToBytes(counter))))
     digest = shaObj.getHMAC("HEX")
-    console.log(digest)
     # Get byte array
     h = @hexToBytes(digest)
   
@@ -81,7 +82,6 @@ class Hotp
         h[offset + 3] & 0xff
   
     v = v + ''
-    console.log @length
     v.substr v.length - @length, @length
 
   intToBytes: (num) ->

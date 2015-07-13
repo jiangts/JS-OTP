@@ -9,27 +9,69 @@
 </head>
 
 <body style="width: 45em;">
-<h1 id="jsotp-demo">OtpManager Demo</h1>
+<h1 id="jsotp-demo">JS OTP Demo</h1>
 <p>Javascript Implementation of 2 Factor Auth</p>
 <hr>
-<p>Secret: "23TplPdS46Juzcyx"</p>
-<h2 id="code-2">Code 2</h2>
-<p id="ticker-2">ticker 2</p>
+<p id="secret">Secret: </p>
+<h2 id="code-1">TOTP code</h2>
+<p id="ticker">timer</p>
 
-<script src="bower_components/utf8/utf8.js"></script>
-<script src="bower_components/buffer/buffer.js"></script>
-<script src="dist/jsOTP.js"></script>
+<hr>
+<p id="secret-2">Secret: </p>
+<h2 id="code-2">HOTP code</h2>
+<p>Counter value is: <span id="counter"></span></p>
+<button onclick="requestHotp()">Get new code</button>
+
+<script src="dist/jsOTP.min.js"></script>
 <script>
 $ = function(sel) {
   return document.querySelector(sel);
 };
+
+var secret = "23TplPdS46Juzcyx"
+$('#secret').innerText = "Secret: " + secret;
+
 var totp = new jsOTP.totp();
-var code = totp.getOtp("23TplPdS46Juzcyx");
+var code = totp.getOtp(secret);
 var hotp = new jsOTP.hotp();
-var doge = hotp.getOtp("23TplPdS46Juzcyx", 0);
+var doge = hotp.getOtp(secret, 0);
 
 console.log(code);
 console.log(doge);
+
+var updateTicker = function(tick, el) {
+  el.innerText = tick;
+}
+var updateTotp = function(secret, el) {
+  el.innerText = totp.getOtp(secret);
+}
+
+updateTotp(secret, $('#code-1'));
+
+var timeLoop = function() {
+  var epoch = Math.round(new Date().getTime() / 1000.0);
+  var countDown = 30 - (epoch % 30);
+  updateTicker(countDown, $('#ticker'));
+  if (epoch % 30 == 0) updateTotp(secret, $('#code-1'));
+}
+
+setInterval(timeLoop, 1000);
+
+var counter = 0;
+var secret2 = "abcdefghijklmnop";
+$('#secret-2').innerText = "Secret: " + secret2;
+$('#counter').innerText = counter;
+
+var updateHotp = function(secret, counter, el) {
+  el.innerText = hotp.getOtp(secret, counter);
+}
+var updateCounter = function(counter, el) {
+  el.innerText = counter;
+}
+var requestHotp = function() {
+  updateHotp(secret2, counter, $('#code-2'));
+  updateCounter(++counter, $('#counter'));
+}
 
 //TODO implement this. The problem is that not all secrets are valid...
 /*

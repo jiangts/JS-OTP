@@ -74,6 +74,9 @@
   Hotp = (function() {
     function Hotp(length) {
       this.length = length != null ? length : 6;
+      if (this.length > 8 || this.length < 6) {
+        throw "Error: invalid code length";
+      }
     }
 
     Hotp.prototype.uintToString = function(uintArray) {
@@ -89,12 +92,10 @@
       shaObj.setHMACKey(key, "TEXT");
       shaObj.update(this.uintToString(new Uint8Array(this.intToBytes(counter))));
       digest = shaObj.getHMAC("HEX");
-      console.log(digest);
       h = this.hexToBytes(digest);
       offset = h[19] & 0xf;
       v = (h[offset] & 0x7f) << 24 | (h[offset + 1] & 0xff) << 16 | (h[offset + 2] & 0xff) << 8 | h[offset + 3] & 0xff;
       v = v + '';
-      console.log(this.length);
       return v.substr(v.length - this.length, this.length);
     };
 
