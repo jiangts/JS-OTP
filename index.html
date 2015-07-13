@@ -1,5 +1,5 @@
 <html><head>
-<title>OtpManager Demo</title>
+<title>JS OTP Demo</title>
 <style>
     body {
         margin: 0 auto;
@@ -9,24 +9,27 @@
 </head>
 
 <body style="width: 45em;">
-<h1 id="otpmanager-demo">OtpManager Demo</h1>
+<h1 id="jsotp-demo">OtpManager Demo</h1>
 <p>Javascript Implementation of 2 Factor Auth</p>
-<hr>
-<p>Secret: "super secret secret awh yeah"</p>
-<h2 id="code-1">Code 1</h2>
-<p id="ticker-1">ticker 1</p>
 <hr>
 <p>Secret: "23TplPdS46Juzcyx"</p>
 <h2 id="code-2">Code 2</h2>
 <p id="ticker-2">ticker 2</p>
 
-<script src="dist/TotpManager.js"></script>
+<script src="bower_components/utf8/utf8.js"></script>
+<script src="bower_components/buffer/buffer.js"></script>
+<script src="dist/jsOTP.js"></script>
 <script>
 $ = function(sel) {
   return document.querySelector(sel);
-}
-var totpManager = new TotpManager("super secret secret awh yeah", $('#code-1'), $('#ticker-1'));
-totpManager.add("23TplPdS46Juzcyx", $('#code-2'), $('#ticker-2'));
+};
+var totp = new jsOTP.totp();
+var code = totp.getOtp("23TplPdS46Juzcyx");
+var hotp = new jsOTP.hotp();
+var doge = hotp.getOtp("23TplPdS46Juzcyx", 0);
+
+console.log(code);
+console.log(doge);
 
 //TODO implement this. The problem is that not all secrets are valid...
 /*

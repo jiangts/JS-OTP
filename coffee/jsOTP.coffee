@@ -1,4 +1,4 @@
-class TotpManager
+class Totp
   # pass in the secret, code dom element, ticker dom element
   constructor: (@expiry = 30, @length = 6) ->
     # validate input
@@ -33,12 +33,16 @@ class TotpManager
     str = Array(len + 1 - str.length).join(pad) + str  if len + 1 >= str.length
     return str
   
-  getOtp: (secret) ->
+  getOtp: (secret, now = new Date().getTime()) ->
     key = @base32tohex(secret)
-    epoch = Math.round(new Date().getTime() / 1000.0)
+    epoch = Math.round(now / 1000.0)
     time = @leftpad(@dec2hex(Math.floor(epoch / @expiry)), 16, "0")
-    hmacObj = new jsSHA(time, "HEX")  # Dependency on sha.js
-    hmac = hmacObj.getHMAC(key, "HEX", "SHA-1", "HEX")
+    shaObj = new jsSHA("SHA-1", "HEX")
+    shaObj.setHMACKey(key, "HEX")
+    shaObj.update(time)
+    hmac = shaObj.getHMAC("HEX")
+    # hmacObj = new jsSHA(time, "HEX")  # Dependency on sha.js
+    # hmac = hmacObj.getHMAC(key, "HEX", "SHA-1", "HEX")
   
     if hmac is "KEY MUST BE IN BYTE INCREMENTS"
       throw "Error: hex key must be in byte increments"
@@ -49,6 +53,55 @@ class TotpManager
     otp = (@hex2dec(hmac.substr(offset * 2, 8)) & @hex2dec("7fffffff")) + ""
     otp = (otp).substr(otp.length - @length, @length)
     return otp
-  
 
-window.TotpManager = TotpManager
+class Hotp
+  constructor: (@length = 6) ->
+
+  # stuck on this for a long time. Use JSON.stringify to inspect uintToString
+  # output!!
+  uintToString: (uintArray) ->
+    encodedString = String.fromCharCode.apply(null, uintArray)
+    decodedString = decodeURIComponent(escape(encodedString))
+    return decodedString
+
+  getOtp: (key, counter) ->
+    shaObj = new jsSHA("SHA-1", "TEXT")
+    shaObj.setHMACKey(key, "TEXT")
+    shaObj.update(@uintToString(new Uint8Array(@intToBytes(counter))))
+    digest = shaObj.getHMAC("HEX")
+    console.log(digest)
+    # Get byte array
+    h = @hexToBytes(digest)
+  
+    # Truncate
+    offset = h[19] & 0xf
+    v = (h[offset] & 0x7f) << 24 |
+        (h[offset + 1] & 0xff) << 16 |
+        (h[offset + 2] & 0xff) << 8 |
+        h[offset + 3] & 0xff
+  
+    v = v + ''
+    console.log @length
+    v.substr v.length - @length, @length
+
+  intToBytes: (num) ->
+    bytes = []
+    i = 7
+    while i >= 0
+      bytes[i] = num & 255
+      num = num >> 8
+      --i
+    return bytes
+
+  hexToBytes: (hex) ->
+    bytes = []
+    c = 0
+    C = hex.length
+    while c < C
+      bytes.push parseInt(hex.substr(c, 2), 16)
+      c += 2
+    return bytes
+  
+window.jsOTP = {}
+jsOTP.totp = Totp
+jsOTP.hotp = Hotp

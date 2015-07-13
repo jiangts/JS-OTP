@@ -1,8 +1,8 @@
 (function() {
-  var TotpManager;
+  var Hotp, Totp;
 
-  TotpManager = (function() {
-    function TotpManager(expiry, length) {
+  Totp = (function() {
+    function Totp(expiry, length) {
       this.expiry = expiry != null ? expiry : 30;
       this.length = length != null ? length : 6;
       if (this.length > 8 || this.length < 6) {
@@ -10,15 +10,15 @@
       }
     }
 
-    TotpManager.prototype.dec2hex = function(s) {
+    Totp.prototype.dec2hex = function(s) {
       return (s < 15.5 ? "0" : "") + Math.round(s).toString(16);
     };
 
-    TotpManager.prototype.hex2dec = function(s) {
+    Totp.prototype.hex2dec = function(s) {
       return parseInt(s, 16);
     };
 
-    TotpManager.prototype.base32tohex = function(base32) {
+    Totp.prototype.base32tohex = function(base32) {
       var base32chars, bits, chunk, hex, i, val;
       base32chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
       bits = "";
@@ -38,20 +38,25 @@
       return hex;
     };
 
-    TotpManager.prototype.leftpad = function(str, len, pad) {
+    Totp.prototype.leftpad = function(str, len, pad) {
       if (len + 1 >= str.length) {
         str = Array(len + 1 - str.length).join(pad) + str;
       }
       return str;
     };
 
-    TotpManager.prototype.getOtp = function(secret) {
-      var epoch, hmac, hmacObj, key, offset, otp, time;
+    Totp.prototype.getOtp = function(secret, now) {
+      var epoch, hmac, key, offset, otp, shaObj, time;
+      if (now == null) {
+        now = new Date().getTime();
+      }
       key = this.base32tohex(secret);
-      epoch = Math.round(new Date().getTime() / 1000.0);
+      epoch = Math.round(now / 1000.0);
       time = this.leftpad(this.dec2hex(Math.floor(epoch / this.expiry)), 16, "0");
-      hmacObj = new jsSHA(time, "HEX");
-      hmac = hmacObj.getHMAC(key, "HEX", "SHA-1", "HEX");
+      shaObj = new jsSHA("SHA-1", "HEX");
+      shaObj.setHMACKey(key, "HEX");
+      shaObj.update(time);
+      hmac = shaObj.getHMAC("HEX");
       if (hmac === "KEY MUST BE IN BYTE INCREMENTS") {
         throw "Error: hex key must be in byte increments";
       } else {
@@ -62,10 +67,69 @@
       return otp;
     };
 
-    return TotpManager;
+    return Totp;
 
   })();
 
-  window.TotpManager = TotpManager;
+  Hotp = (function() {
+    function Hotp(length) {
+      this.length = length != null ? length : 6;
+    }
+
+    Hotp.prototype.uintToString = function(uintArray) {
+      var decodedString, encodedString;
+      encodedString = String.fromCharCode.apply(null, uintArray);
+      decodedString = decodeURIComponent(escape(encodedString));
+      return decodedString;
+    };
+
+    Hotp.prototype.getOtp = function(key, counter) {
+      var digest, h, offset, shaObj, v;
+      shaObj = new jsSHA("SHA-1", "TEXT");
+      shaObj.setHMACKey(key, "TEXT");
+      shaObj.update(this.uintToString(new Uint8Array(this.intToBytes(counter))));
+      digest = shaObj.getHMAC("HEX");
+      console.log(digest);
+      h = this.hexToBytes(digest);
+      offset = h[19] & 0xf;
+      v = (h[offset] & 0x7f) << 24 | (h[offset + 1] & 0xff) << 16 | (h[offset + 2] & 0xff) << 8 | h[offset + 3] & 0xff;
+      v = v + '';
+      console.log(this.length);
+      return v.substr(v.length - this.length, this.length);
+    };
+
+    Hotp.prototype.intToBytes = function(num) {
+      var bytes, i;
+      bytes = [];
+      i = 7;
+      while (i >= 0) {
+        bytes[i] = num & 255;
+        num = num >> 8;
+        --i;
+      }
+      return bytes;
+    };
+
+    Hotp.prototype.hexToBytes = function(hex) {
+      var C, bytes, c;
+      bytes = [];
+      c = 0;
+      C = hex.length;
+      while (c < C) {
+        bytes.push(parseInt(hex.substr(c, 2), 16));
+        c += 2;
+      }
+      return bytes;
+    };
+
+    return Hotp;
+
+  })();
+
+  window.jsOTP = {};
+
+  jsOTP.totp = Totp;
+
+  jsOTP.hotp = Hotp;
 
 }).call(this);

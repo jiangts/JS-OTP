@@ -1,0 +1,22 @@
+{
+  "name": "buffer",
+  "version": "3.46.1",
+  "main": "buffer.min.js",
+  "description": "'buffer' nodejs core module browserify-ied with `--standalone buffer`. Should support all module systems (commonjs, AMD & `window.buffer`) - check browserify docs.",
+  "keywords": [
+    "nodejs",
+    "browserify",
+    "buffer"
+  ],
+  "homepage": "https://github.com/anodynos/node2web_buffer",
+  "_release": "3.46.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "3.46.1",
+    "commit": "91433d256cacfc3814d71e9e0c458af2a0cb575a"
+  },
+  "_source": "git://github.com/anodynos/node2web_buffer.git",
+  "_target": "~3.46.1",
+  "_originalSource": "buffer",
+  "_direct": true
+}
