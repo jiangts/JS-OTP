@@ -1,17 +1,9 @@
 class TotpManager
   # pass in the secret, code dom element, ticker dom element
-  constructor: (secret, codeEl, tickEl, @expiry = 30, @length = 6) ->
+  constructor: (@expiry = 30, @length = 6) ->
     # validate input
     if @length > 8 or @length < 6
       throw "Error: invalid code length"
-
-    # create array to hold all accounts to manage
-    @accounts = []
-    @add secret, codeEl, tickEl
-
-    # update @timer every second
-    setInterval @timer, 1000
-    return
 
   dec2hex: (s) ->
     ((if s < 15.5 then "0" else "")) + Math.round(s).toString(16)
@@ -58,21 +50,5 @@ class TotpManager
     otp = (otp).substr(otp.length - @length, @length)
     return otp
   
-  updateOtp: ->
-    for account in @accounts
-      account.codeEl.innerHTML = @getOtp account.secret
-  
-  timer: =>
-    epoch = Math.round(new Date().getTime() / 1000.0)
-    countDown = @expiry - (epoch % @expiry)
-    @updateOtp()  if epoch % @expiry is 0
-    for account in @accounts
-      account.tickEl.innerHTML = countDown
-    return
-
-  add: (secret, codeEl, tickEl) ->
-    @accounts.push secret: secret, codeEl: codeEl, tickEl: tickEl
-    @updateOtp()
-    
 
 window.TotpManager = TotpManager

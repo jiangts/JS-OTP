@@ -11,8 +11,8 @@ module.exports = (grunt) ->
 
     concat:
       app:
-        src: ['js/totp.js', 'js/sha.js']
-        dest: 'dist/TotpManager.js'
+        src: ['js/jsOTP.js', 'js/sha_dev.js']
+        dest: 'dist/jsOTP.js'
 
     uglify:
       app:
@@ -24,7 +24,7 @@ module.exports = (grunt) ->
           */\n
           """
         files:
-          'dist/TotpManager.min.js': ['dist/TotpManager.js']
+          'dist/jsOTP.min.js': ['dist/jsOTP.js']
 
     watch:
       app:

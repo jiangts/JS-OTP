@@ -1,38 +1,34 @@
-# TotpManager
-Javascript Implementation of 2 Factor Auth
+# JS OTP
+Javascript Implementation of HOTP and TOTP
 
 ---
 
-A small javascript library (13k minified, 5k minified and gzipped) that handles generation of [Time-based One-time Password Algorithm (TOTP) codes](http://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm) as per the [TOTP RFC Draft](http://tools.ietf.org/id/draft-mraihi-totp-timebased-06.html). If you're familiar with Google Authenticator, this code produces the same codes as the Authenticator app.
+A small javascript library (~~13k minified, 5k minified and gzipped~~) that handles generation of [HMAC-based One-time Password Algorithm (HOTP) codes](https://en.wikipedia.org/wiki/HMAC-based_One-time_Password_Algorithm) as per the [HOTP RFC Draft](https://tools.ietf.org/html/rfc4226) and the [Time-based One-time Password Algorithm (TOTP) codes](http://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm) as per the [TOTP RFC Draft](http://tools.ietf.org/id/draft-mraihi-totp-timebased-06.html). This library produces the same codes as the Google Authenticator app.
 
-This package only exposes `TotpManager` and `jsSHA` to global scope and does not depend on jQuery.
+This package only exposes `jsOTP` and `jsSHA` to global scope and does not depend on jQuery.
 
 ## Usage:
-Usage is simple. Just include `dist/TotpManager.js` to your page and pass it a config.
-```
-<script src='dist/TotpManager.min.js'></script>
-<script>
-var totpManager = new TotpManager("super secret secret", codeEl, tickEl);
-</script>
-```
+Usage is simple. Just include `dist/jsOTP.js` to your page and pass it a config.
 
-- The first argument is your secret string, 
-- the second is a DOM element where you want to display your code, 
-- the third is a DOM element where you want to show a countdown before code expiry.
+    <script src='dist/jsOTP.min.js'></script>
+    <script>
+    // hotp
+    var hotp = new jsOTP.hotp();
+    var hmacCode = hotp.getOtp(<your OTP key>, <counter>);
+    
+    // totp
+    var totp = new jsOTP.totp();
+    var timeCode = totp.getOtp(<your OTP key>);
+    </script>
 
-Make sure the elements you pass in are already initialized.
+## Additional Configs
+You can also configure the expiry time for each code (defaults to 30 seconds) and the length of the code (between 6 and 8, defaults to 6) by passing two optional arguments to the `totp` constructor:
 
+    var totp = new jsOTP.totp(<expiry seconds>, <code length>);
 
-It is simple to manage multiple codes. Just add them to the manager!
-```
-var totpManager.add("23TplPdS46Juzcyx", codeEl2, tickEl2);
-```
+You can also input the time for TOTP calculations as an optional second argument:
 
-Finally, you can also configure the expiry time for each code (defaults to 30 seconds) and the length of the code (between 6 and 8, defaults to 6) by passing two additional arguments to the constructor:
-```
-var totpManager = new TotpManager(<secret>, <code elem>, <tick elem>, 
-                                  <expiry seconds>, <code length>);
-```
+    var timeCode = totp.getOtp(<OTP key>, <milliseconds time>);
 
 ## Acknowledgements
-This package is adapted from the following [fiddle](http://jsfiddle.net/nt18yhmL/) and uses Brian Turek's [jsSHA](https://github.com/caligatio/jsSHA/).
+This package is adapted from the following [fiddle](http://jsfiddle.net/nt18yhmL/) and the [Node OTP](https://github.com/guyht/notp/) library and uses Brian Turek's [jsSHA](https://github.com/caligatio/jsSHA/).

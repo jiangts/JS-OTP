@@ -1,19 +1,13 @@
 (function() {
-  var TotpManager,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var TotpManager;
 
   TotpManager = (function() {
-    function TotpManager(secret, codeEl, tickEl, expiry, length) {
+    function TotpManager(expiry, length) {
       this.expiry = expiry != null ? expiry : 30;
       this.length = length != null ? length : 6;
-      this.timer = __bind(this.timer, this);
       if (this.length > 8 || this.length < 6) {
         throw "Error: invalid code length";
       }
-      this.accounts = [];
-      this.add(secret, codeEl, tickEl);
-      setInterval(this.timer, 1000);
-      return;
     }
 
     TotpManager.prototype.dec2hex = function(s) {
@@ -66,40 +60,6 @@
       otp = (this.hex2dec(hmac.substr(offset * 2, 8)) & this.hex2dec("7fffffff")) + "";
       otp = otp.substr(otp.length - this.length, this.length);
       return otp;
-    };
-
-    TotpManager.prototype.updateOtp = function() {
-      var account, _i, _len, _ref, _results;
-      _ref = this.accounts;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        account = _ref[_i];
-        _results.push(account.codeEl.innerHTML = this.getOtp(account.secret));
-      }
-      return _results;
-    };
-
-    TotpManager.prototype.timer = function() {
-      var account, countDown, epoch, _i, _len, _ref;
-      epoch = Math.round(new Date().getTime() / 1000.0);
-      countDown = this.expiry - (epoch % this.expiry);
-      if (epoch % this.expiry === 0) {
-        this.updateOtp();
-      }
-      _ref = this.accounts;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        account = _ref[_i];
-        account.tickEl.innerHTML = countDown;
-      }
-    };
-
-    TotpManager.prototype.add = function(secret, codeEl, tickEl) {
-      this.accounts.push({
-        secret: secret,
-        codeEl: codeEl,
-        tickEl: tickEl
-      });
-      return this.updateOtp();
     };
 
     return TotpManager;

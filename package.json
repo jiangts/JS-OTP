@@ -1,7 +1,7 @@
 {
-  "name": "OtpManager",
+  "name": "jsOTP",
   "version": "0.0.1",
-  "repository": "http://github.com/jiangts/OtpManager",
+  "repository": "http://github.com/jiangts/jsOTP",
   "author": "Allan Jiang",
   "dependencies": {
     "grunt": "~0.4.0",
