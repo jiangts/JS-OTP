@@ -82,7 +82,9 @@
     Hotp.prototype.uintToString = function(uintArray) {
       var decodedString, encodedString;
       encodedString = String.fromCharCode.apply(null, uintArray);
-      decodedString = decodeURIComponent(escape(encodedString));
+	    // 25-10-2017: <chudel> escape does not handle UTF-8 encoding properly, resulting in some counter values (i.e.: 128) not working
+	    // change deprecated escape function to encodeURIComponent();
+      decodedString = decodeURIComponent(encodeURIComponent(encodedString));
       return decodedString;
     };
 
