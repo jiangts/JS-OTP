@@ -78,7 +78,7 @@
         throw "Error: invalid code length";
       }
     }
-
+ 
     Hotp.prototype.uintToString = function(uintArray) {
       var decodedString, encodedString;
       encodedString = String.fromCharCode.apply(null, uintArray);
@@ -88,9 +88,10 @@
 
     Hotp.prototype.getOtp = function(key, counter) {
       var digest, h, offset, shaObj, v;
-      shaObj = new jsSHA("SHA-1", "TEXT");
+      shaObj = new jsSHA("SHA-1", "HEX"); // was "TEXT" but this broke for counter > 127
       shaObj.setHMACKey(key, "TEXT");
-      shaObj.update(this.uintToString(new Uint8Array(this.intToBytes(counter))));
+      counterString = ("0000000000000000" + counter.toString(16)).slice(-16); // padded hex counter value
+      shaObj.update(counterString);
       digest = shaObj.getHMAC("HEX");
       h = this.hexToBytes(digest);
       offset = h[19] & 0xf;
