@@ -11,7 +11,7 @@ module.exports = (grunt) ->
 
     concat:
       app:
-        src: ['js/babel-fix.js', 'js/jsOTP.js', 'js/sha_dev.js']
+        src: ['js/jsOTP.js', 'js/sha_dev.js']
         dest: 'dist/jsOTP.js'
 
     uglify:
