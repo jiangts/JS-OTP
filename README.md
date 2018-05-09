@@ -30,5 +30,8 @@ You can also input the time for TOTP calculations as an optional second argument
 
     var timeCode = totp.getOtp(<OTP key>, <milliseconds time>);
 
+## Building
+Due to an issue with babel causing it to replace `window` dependency with `undefined`, use `release.sh` from the main direcotry. It runs `sed` before minification to replace broken `window` injections.
+
 ## Acknowledgements
 This package is adapted from the following [fiddle](http://jsfiddle.net/nt18yhmL/) and the [Node OTP](https://github.com/guyht/notp/) library and uses Brian Turek's [jsSHA](https://github.com/caligatio/jsSHA/).
