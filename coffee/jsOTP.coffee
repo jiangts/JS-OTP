@@ -51,7 +51,12 @@ class Totp
       offset = @hex2dec(hmac.substring(hmac.length - 1))
   
     otp = (@hex2dec(hmac.substr(offset * 2, 8)) & @hex2dec("7fffffff")) + ""
-    otp = (otp).substr(otp.length - @length, @length)
+    
+    if otp.length > @length
+      otp = otp.substr(otp.length - @length, @length)
+    else 
+      otp = @leftpad(otp, @length, "0")
+
     return otp
 
 class Hotp
