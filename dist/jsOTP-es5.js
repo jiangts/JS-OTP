@@ -50,6 +50,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 					bits += this.leftpad(val.toString(2), 5, "0");
 					i++;
 				}
+				for (i = i % 8; i > 0; i--) {
+					bits += this.leftpad('0', 5, '0');
+			        }
 				i = 0;
 				while (i + 4 <= bits.length) {
 					chunk = bits.substr(i, 4);
