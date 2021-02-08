@@ -22,7 +22,7 @@ class Totp
       bits += @leftpad(val.toString(2), 5, "0")
       i++
   
-  	checklength = bits.length - bits.length % 8
+    checklength = bits.length - bits.length % 8
     i = 0
     while i + 4 <= checklength
       chunk = bits.substr(i, 4)
