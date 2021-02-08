@@ -22,8 +22,9 @@ class Totp
       bits += @leftpad(val.toString(2), 5, "0")
       i++
   
+    checklength = bits.length - bits.length % 8
     i = 0
-    while i + 4 <= bits.length
+    while i + 4 <= checklength
       chunk = bits.substr(i, 4)
       hex = hex + parseInt(chunk, 2).toString(16)
       i += 4
