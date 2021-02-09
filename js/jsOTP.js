@@ -21,7 +21,7 @@
     }
 
     base32tohex(base32) {
-      var base32chars, bits, chunk, hex, i, val;
+      var base32chars, bits, checklength, chunk, hex, i, val;
       base32chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
       bits = "";
       hex = "";
@@ -31,8 +31,9 @@
         bits += this.leftpad(val.toString(2), 5, "0");
         i++;
       }
+      checklength = bits.length - bits.length % 8;
       i = 0;
-      while (i + 4 <= bits.length) {
+      while (i + 4 <= checklength) {
         chunk = bits.substr(i, 4);
         hex = hex + parseInt(chunk, 2).toString(16);
         i += 4;

@@ -5,11 +5,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 (function () {
-	var Hotp, Totp, global;
-
-	if (global === void 0 && window !== void 0) {
-		global = window;
-	}
+	var Hotp, Totp;
 
 	Totp = function () {
 		// pass in the secret, code dom element, ticker dom element
@@ -40,7 +36,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 		}, {
 			key: "base32tohex",
 			value: function base32tohex(base32) {
-				var base32chars, bits, chunk, hex, i, val;
+				var base32chars, bits, checklength, chunk, hex, i, val;
 				base32chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 				bits = "";
 				hex = "";
@@ -50,8 +46,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 					bits += this.leftpad(val.toString(2), 5, "0");
 					i++;
 				}
+				checklength = bits.length - bits.length % 8;
 				i = 0;
-				while (i + 4 <= bits.length) {
+				while (i + 4 <= checklength) {
 					chunk = bits.substr(i, 4);
 					hex = hex + parseInt(chunk, 2).toString(16);
 					i += 4;
