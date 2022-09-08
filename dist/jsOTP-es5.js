@@ -76,6 +76,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 				epoch = Math.round(now / 1000.0);
 				time = this.leftpad(this.dec2hex(Math.floor(epoch / this.expiry)), 16, "0");
 				shaObj = new jsSHA("SHA-1", "HEX");
+				if (key.length % 2 !== 0) key = key.substring(0,key.length-1);
 				shaObj.setHMACKey(key, "HEX");
 				shaObj.update(time);
 				hmac = shaObj.getHMAC("HEX");
